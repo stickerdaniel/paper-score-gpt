@@ -26,7 +26,7 @@ To use GPTify, you will need an OpenAI API key.
 ### OpenAI API Key
 
 1. Visit the [OpenAI website](https://www.openai.com/) and sign up for an account if you haven't already.
-2. After signing up, navigate to the [API key management page](https://platform.openai.com/signup) and copy your API key.
+2. After signing up, navigate to the [API key management page](https://platform.openai.com/api-keys) and copy your API key.
 
 ## Usage
 
