@@ -9,13 +9,13 @@ A Python project leveraging OpenAI's GPT API to evaluate research papers and upd
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/stickerdaniel/GPTifyGPTify.git
+   git clone https://github.com/stickerdaniel/PaperScoreGPT.git
    ```
 
 3. Install the required dependencies:
 
    ```bash
-   cd GPTify
+   cd PaperScoreGPT
    ```
    ```bash
    pip install -r requirements.txt
@@ -23,7 +23,7 @@ A Python project leveraging OpenAI's GPT API to evaluate research papers and upd
 
 ## Obtaining API Keys
 
-To use GPTify, you will need an OpenAI API key.
+To use PaperScoreGPT, you will need an OpenAI API key.
 
 ### OpenAI API Key
 
