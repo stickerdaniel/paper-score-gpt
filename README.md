@@ -34,5 +34,5 @@ To use GPTify, you will need an OpenAI API key.
 
 2. Run the main program:
    ```bash
-   python main.py
+   python review_sources.py
    ```
