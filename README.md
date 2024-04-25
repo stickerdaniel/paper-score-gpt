@@ -21,11 +21,9 @@ A Python project leveraging OpenAI's GPT API to evaluate research papers and upd
    pip install -r requirements.txt
    ```
 
-## Obtaining API Keys
+## Obtaining OpenAI API Key
 
 To use PaperScoreGPT, you will need an OpenAI API key.
-
-### OpenAI API Key
 
 1. Visit the [OpenAI website](https://www.openai.com/) and sign up for an account if you haven't already.
 2. After signing up, navigate to the [API key management page](https://platform.openai.com/api-keys) and copy your API key.
