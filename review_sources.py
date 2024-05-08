@@ -2,7 +2,7 @@ import re
 import pandas as pd
 import os
 import json
-from openai import OpenAI, OpenAIError  # Updated import
+from openai import OpenAI, OpenAIError 
 
 # Set the OpenAI API key using environment variables for security
 api_key = os.getenv("OPENAI_API_KEY", "YOUR_API_KEY_HERE")
