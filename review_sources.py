@@ -1,8 +1,9 @@
+# review_sources.py
 import re
 import pandas as pd
 import os
 import json
-from openai import OpenAI, OpenAIError 
+from openai import OpenAI, OpenAIError
 
 # Set the OpenAI API key using environment variables for security
 api_key = os.getenv("OPENAI_API_KEY", "YOUR_API_KEY_HERE")
@@ -67,6 +68,7 @@ def evaluate_paper_with_chatgpt(paper_json):
     Authors: {paper_json.get('Authors', 'N/A')}
     Publication Year: {paper_json.get('Publication Year', 'N/A')}
     Times Cited: {paper_json.get('Times Cited, All Databases', 'N/A')}
+    A high citiation count for my research project topi is e.g. > 100
 
     Note: The focus is on gamification in educational contexts. Articles related to medical applications or other irrelevant fields should be scored accordingly. Be critical and provide constructive feedback. If the paper is not relevant (<50% score), please provide a briefer answer with really short sentences.
 
