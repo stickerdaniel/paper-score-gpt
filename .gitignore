@@ -1,7 +1,7 @@
 # Ignore IntelliJ IDEA project files
 .idea/
 *.iml
-workspace.xml
+.idea/workspace.xml
 shelf/
 
 # Ignore Python virtual environment
@@ -14,7 +14,7 @@ __pycache__/
 *~
 .DS_Store
 
-# Ignore specific Python scripts
+# Ignore other Python scripts in my project
 clean.py
 merge_sheets.py
 
