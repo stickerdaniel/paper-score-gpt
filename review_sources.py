@@ -1,20 +1,35 @@
-# review_sources.py
 import re
 import pandas as pd
 import os
 import json
 from openai import OpenAI, OpenAIError
 
+# Load configuration from a JSON file
+config_path = 'config.json'
+if not os.path.exists(config_path):
+    raise FileNotFoundError(f"Configuration file {config_path} does not exist.")
+
+with open(config_path, 'r') as config_file:
+    config = json.load(config_file)
+
+# Ensure required config settings are present
+required_config_keys = ['api_key', 'excel_file_path', 'sheet_name', 'research_topic']
+missing_keys = [key for key in required_config_keys if key not in config]
+if missing_keys:
+    raise ValueError(f"Missing required config keys: {', '.join(missing_keys)}")
+
 # Set the OpenAI API key using environment variables for security
-api_key = os.getenv("OPENAI_API_KEY", "YOUR_API_KEY_HERE")
+api_key = os.getenv("OPENAI_API_KEY", config.get("api_key"))
+if not api_key or api_key == "YOUR_API_KEY_HERE":
+    raise ValueError("API key is not set. Please set it in the environment or config.json")
 
 # Instantiate the OpenAI client
 client = OpenAI(api_key=api_key)
 
 # File path to the Excel file
-excel_file_path = 'Literature_Proseminar_Gamification_merged_r2review.xlsx'
+excel_file_path = config['excel_file_path']
 # Default sheet name (user-specified)
-sheet_name = 'merged results no duplicates'
+sheet_name = config['sheet_name']
 
 # Append '_reviewed' to the file name for the reviewed data
 excel_file_path_reviewed = excel_file_path.replace('.xlsx', '_reviewed.xlsx')
@@ -37,8 +52,7 @@ for col_name in new_columns:
         data[col_name] = 'not processed yet'  # Initialize with a default value
 
 # Define required fields for processing
-required_fields = ['Title', 'Abstract']
-
+required_fields = config.get('required_fields', ['Title', 'Abstract'])
 
 # Helper function to build a JSON object for ChatGPT evaluation
 def build_paper_json(row, fields):
@@ -52,11 +66,10 @@ def build_paper_json(row, fields):
             paper_json[field] = 'N/A'  # Field does not exist in the data
     return paper_json
 
-
 # Function to evaluate the paper with ChatGPT using the new API client
 def evaluate_paper_with_chatgpt(paper_json):
     prompt = f"""
-    I am working on a research project on "Gamification in Education". Please evaluate the following paper critically and provide in a short answer:
+    I am working on a research project on "{config.get('research_topic', 'your research topic here')}". Please evaluate the following paper critically and provide in a short answer:
     - The added value of this paper to my research. (if any) (1-2 sentences)
     - Any additional notes or observations regarding the paper in bullet points. (1-3 short points)
     - A score (0-100%) indicating the relevance of this paper to my research project. (x%)
@@ -67,13 +80,11 @@ def evaluate_paper_with_chatgpt(paper_json):
     Abstract: {paper_json['Abstract']}
     Authors: {paper_json.get('Authors', 'N/A')}
     Publication Year: {paper_json.get('Publication Year', 'N/A')}
-    Times Cited: {paper_json.get('Times Cited, All Databases', 'N/A')}
-    A high citiation count for my research project topi is e.g. > 100
-
-    Note: The focus is on gamification in educational contexts. Articles related to medical applications or other irrelevant fields should be scored accordingly. Be critical and provide constructive feedback. If the paper is not relevant (<50% score), please provide a briefer answer with really short sentences.
+    Times Cited: {paper_json.get('Times Cited', 'N/A')}
+    Note: {config.get('research_topic_note', 'Keep the focus on this specific topic.')}. Articles unrelated to this topic should be scored accordingly. Be critical and provide constructive feedback. If the paper is not relevant (<50% score), please provide a briefer answer with really short sentences.
 
     Here is an example of the JSON format I expect for the response:
-    {{"score": "80%", "reason": "The paper provides a comprehensive overview of gamification in educational settings.", "notes": "- Seems like there are no recent examples of gamification in practice.", "added value": "The paper offers a unique perspective on the impact of gamification on student engagement."}}
+    {{"score": "80%", "reason": "The paper provides a comprehensive overview.", "notes": "[INSERT PAPER SPECIFIC NOTES as BULLETPOINTS].", "added value": "[INSERT WHAT VALUE THIS PAPER ADDS TO THE RESEARCH PROJECT + {config.get('research_topic', 'your research topic here')}]"}}
     """
 
     try:
@@ -101,7 +112,7 @@ def evaluate_paper_with_chatgpt(paper_json):
 
         # Debugging: print raw and sanitized content
         print(f"Review for paper '{paper_json['Title']}':")
-        print("Raw content:", response_content)  # Raw content for debugging
+        print("Raw content:", response_content)  # Raw content for debugging purposes
         print("Cleaned JSON:", cleaned_json_str)  # Cleaned JSON for debugging
 
         # Attempt to parse the sanitized content into JSON
@@ -128,7 +139,6 @@ def evaluate_paper_with_chatgpt(paper_json):
         }
 
     return evaluation
-
 
 # Iterate over each row in the Excel file and evaluate the paper
 for index, row in data.iterrows():
