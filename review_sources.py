@@ -13,7 +13,7 @@ with open(config_path, 'r') as config_file:
     config = json.load(config_file)
 
 # Ensure required config settings are present
-required_config_keys = ['api_key', 'excel_file_path', 'sheet_name', 'research_topic']
+required_config_keys = ['api_key', 'excel_file_path', 'sheet_name', 'research_topic', 'openai_model']
 missing_keys = [key for key in required_config_keys if key not in config]
 if missing_keys:
     raise ValueError(f"Missing required config keys: {', '.join(missing_keys)}")
@@ -86,35 +86,25 @@ def evaluate_paper_with_chatgpt(paper_json):
     Note: {config.get('research_topic_note', 'Keep the focus on this specific topic.')}. Articles unrelated to this topic should be scored accordingly. Be critical and provide constructive feedback. If the paper is not relevant (<50% score), please provide a briefer answer with really short sentences.
 
     Here is an example of the JSON format I expect for the response:
-    {{"score": "80%", "reason": "The paper provides a comprehensive overview.", "notes": "[INSERT PAPER SPECIFIC NOTES as BULLETPOINTS].", "added value": "[INSERT WHAT VALUE THIS PAPER ADDS TO THE RESEARCH PROJECT + {config.get('research_topic', 'your research topic here')}]"}}
+    {{"score": "80%", "reason": "The paper provides a comprehensive overview.", "notes": "[INSERT PAPER SPECIFIC NOTES AS BULLETPOINTS LIKE - POINT1\n-POINT2\n...].", "added value": "[INSERT WHAT VALUE THIS PAPER ADDS TO THE RESEARCH PROJECT + {config.get('research_topic', 'your research topic here')}]"}}
     """
 
     try:
-        # Make the API call
+        # Make the API call using the specified model
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=config.get("openai_model", "gpt-4o"),
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300
         )
         # Extract the response content
         response_content = response.choices[0].message.content
 
-        # Split at double quotes to isolate quoted content from non-quoted sections
-        parts = response_content.split('"')  # Split into non-quoted and quoted parts
-
-        # Clean non-quoted sections to remove control characters, excess spaces, and newlines
-        for i in range(len(parts)):
-            if i % 2 == 0:  # Non-quoted sections
-                # Remove all control characters and extra spaces
-                parts[i] = re.sub(r'[\x00-\x1F\x7F]+', '', parts[i])  # Remove control characters
-                parts[i] = parts[i].strip()
-
-        # Reconstruct the JSON structure by joining the parts with double quotes
-        cleaned_json_str = '"'.join(parts)  # Rejoin parts with double quotes
+        # Clean up JSON string to ensure it can be parsed correctly
+        cleaned_json_str = response_content.strip("```json").strip("```")
 
         # Debugging: print raw and sanitized content
         print(f"Review for paper '{paper_json['Title']}':")
-        print("Raw content:", response_content)  # Raw content for debugging purposes
+        print("Raw content:", response_content)  # Raw content for debugging
         print("Cleaned JSON:", cleaned_json_str)  # Cleaned JSON for debugging
 
         # Attempt to parse the sanitized content into JSON
@@ -128,7 +118,7 @@ def evaluate_paper_with_chatgpt(paper_json):
                 "notes": "An error occurred while parsing the OpenAI response.",
                 "added value": "-",
             }
-            # try again
+            # Try again
             return evaluate_paper_with_chatgpt(paper_json)
 
     except OpenAIError as e:
@@ -153,7 +143,7 @@ for index, row in data.iterrows():
     # Build a JSON object with the paper row information
     paper_json = build_paper_json(row, data.columns)
 
-    print(f"\n\nReviewing paper {int(index) + 1}:")
+    print(f"\n\nReviewing paper {index + 1}:")
     print(paper_json)  # Print the JSON object for debugging
 
     # Evaluate the paper with ChatGPT
