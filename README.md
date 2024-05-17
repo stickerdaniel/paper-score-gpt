@@ -45,9 +45,7 @@ Before running the project, you need to set up the `config.json` file in the roo
 }
 ```
 
-Replace `"YOUR_API_KEY_HERE"` with your actual OpenAI API key. You can specify the OpenAI model to use (`gpt-3.5-turbo`, `gpt-4`, or `gpt-4-turbo`).
-
-## Usage
+Replace `"YOUR_API_KEY_HERE"` with your actual OpenAI API key. see https://platform.openai.com/docs/models for a list of available models.
 
 1. Ensure you have set up the necessary API key in your `config.json`.
 
