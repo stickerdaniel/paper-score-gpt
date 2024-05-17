@@ -1,0 +1,8 @@
+{
+  "api_key": "YOUR_API_KEY_HERE",
+  "excel_file_path": "Literature_Proseminar_Gamification_merged.xlsx",
+  "sheet_name": "merged results no duplicates",
+  "research_topic": "Gamification in Education",
+  "research_topic_note": "Keep the focus on gamification in educational contexts.",
+  "required_fields": ["Title", "Abstract"]
+}
