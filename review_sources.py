@@ -54,6 +54,7 @@ for col_name in new_columns:
 # Define required fields for processing
 required_fields = config.get('required_fields', ['Title', 'Abstract'])
 
+
 # Helper function to build a JSON object for ChatGPT evaluation
 def build_paper_json(row, fields):
     paper_json = {}
@@ -65,6 +66,7 @@ def build_paper_json(row, fields):
         else:
             paper_json[field] = 'N/A'  # Field does not exist in the data
     return paper_json
+
 
 # Function to evaluate the paper with ChatGPT using the new API client
 def evaluate_paper_with_chatgpt(paper_json):
@@ -140,6 +142,7 @@ def evaluate_paper_with_chatgpt(paper_json):
 
     return evaluation
 
+
 # Iterate over each row in the Excel file and evaluate the paper
 for index, row in data.iterrows():
     # Check if required fields exist and are not empty
@@ -150,7 +153,7 @@ for index, row in data.iterrows():
     # Build a JSON object with the paper row information
     paper_json = build_paper_json(row, data.columns)
 
-    print(f"\n\nReviewing paper {index + 1}:")
+    print(f"\n\nReviewing paper {int(index) + 1}:")
     print(paper_json)  # Print the JSON object for debugging
 
     # Evaluate the paper with ChatGPT
