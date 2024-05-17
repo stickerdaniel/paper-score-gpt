@@ -35,13 +35,13 @@ Before running the project, you need to set up the `config.json` file in the roo
 
 ```json
 {
-    "api_key": "YOUR_API_KEY_HERE",
-    "excel_file_path": "Literature_Proseminar_Gamification_merged.xlsx",
-    "sheet_name": "merged results no duplicates",
-    "research_topic": "Gamification in Education",
-    "research_topic_note": "Keep the focus on gamification in educational contexts.",
-    "required_fields": ["Title", "Abstract"],
-    "openai_model": "gpt-3.5-turbo"  // Use "gpt-3.5-turbo" for cheaper and "gpt-4" or "gpt-4-turbo" for better quality
+   "api_key": "YOUR_API_KEY_HERE",
+   "excel_file_path": "Literature_Proseminar_Gamification_merged.xlsx",
+   "sheet_name": "merged results no duplicates",
+   "research_topic": "Gamification in Education",
+   "research_topic_note": "Keep the focus on gamification in educational contexts.",
+   "required_fields": ["Title", "Abstract"],
+   "openai_model": "gpt-4o"
 }
 ```
 
